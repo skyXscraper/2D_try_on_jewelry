@@ -7,32 +7,48 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Outfit',sans-serif;background:#0d0d0d;color:#f0ead6;min-height:100vh;display:flex;flex-direction:column}
-  header{padding:1.5rem 2.5rem;border-bottom:1px solid #2a2518;display:flex;align-items:center;gap:1rem}
-  header .logo{font-size:1.4rem;font-weight:700;color:#d4af37;letter-spacing:.04em}
-  header nav a{color:#a89060;text-decoration:none;margin-left:2rem;font-size:.9rem;transition:color .2s}
-  header nav a:hover{color:#d4af37}
+  body{
+    font-family:'Outfit',sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;
+    background:radial-gradient(circle, rgba(59,28,91,1) 0%, rgba(10,3,16,1) 80%);
+    color:#D8BFD8;
+  }
+  header{
+    padding:1.5rem 2.5rem;border-bottom:1px solid rgba(216,191,216,.12);
+    display:flex;align-items:center;gap:1rem;
+    background:rgba(10,3,16,.6);backdrop-filter:blur(8px);
+  }
+  .logo{font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:.06em;text-shadow:0 0 24px rgba(180,100,255,.6)}
+  header nav a{color:#a07cbd;text-decoration:none;margin-left:2rem;font-size:.9rem;transition:color .2s}
+  header nav a:hover{color:#fff}
   main{flex:1;padding:2.5rem}
-  h1{font-size:1.5rem;font-weight:700;color:#d4af37;margin-bottom:.3rem}
-  .sub{color:#7a6a40;font-size:.87rem;margin-bottom:2rem}
-  .empty{text-align:center;padding:5rem;color:#3a3020}
-  .empty a{color:#d4af37;text-decoration:none}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
-  .card{background:#161410;border:1px solid #2a2518;border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s}
-  .card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(212,175,55,.12)}
-  .card-img{width:100%;height:180px;object-fit:contain;background:#1a1608;padding:1rem}
+  h1{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.3rem;text-shadow:0 0 20px rgba(200,130,255,.5)}
+  .sub{color:#9b7eb8;font-size:.87rem;margin-bottom:2rem}
+  .empty{text-align:center;padding:5rem;color:#4a3060}
+  .empty a{color:#b87aef;text-decoration:none}
+  .empty a:hover{color:#fff}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:1.5rem}
+  .card{
+    background:rgba(45,17,69,.5);
+    border:1px solid rgba(216,191,216,.12);
+    border-radius:16px;overflow:hidden;
+    transition:transform .2s,box-shadow .25s;
+    backdrop-filter:blur(8px);
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 0 50px rgba(120,50,220,.35),0 12px 40px rgba(0,0,0,.5)}
+  .card-img{width:100%;height:180px;object-fit:contain;background:rgba(10,3,16,.5);padding:1rem}
   .card-body{padding:1.2rem}
-  .badge{display:inline-block;background:#1e1a0e;border:1px solid #3a3020;color:#a89060;font-size:.7rem;padding:.15rem .5rem;border-radius:99px;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em}
-  .card-name{font-size:.9rem;color:#c8b87a;margin-bottom:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .badge{display:inline-block;background:rgba(59,28,91,.8);border:1px solid rgba(216,191,216,.18);color:#c8a8e0;font-size:.7rem;padding:.15rem .5rem;border-radius:99px;margin-bottom:.6rem;text-transform:uppercase;letter-spacing:.06em}
+  .card-name{font-size:.9rem;color:#D8BFD8;margin-bottom:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .qr-wrap{text-align:center;margin-bottom:1rem}
-  .qr-wrap img{width:120px;height:120px;border:2px solid #2a2518;border-radius:8px;background:#fff;padding:4px}
-  .qr-url{font-size:.7rem;color:#5a4a20;word-break:break-all;margin-top:.4rem}
+  .qr-wrap img{width:120px;height:120px;border:2px solid rgba(180,100,255,.3);border-radius:10px;background:#fff;padding:4px;box-shadow:0 0 20px rgba(120,50,220,.3)}
+  .qr-url{font-size:.68rem;color:#6a4a80;word-break:break-all;margin-top:.4rem}
   .actions{display:flex;gap:.6rem}
-  .btn{flex:1;padding:.6rem;font-size:.82rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;text-decoration:none;text-align:center;font-family:inherit;transition:opacity .2s}
-  .btn-gold{background:linear-gradient(135deg,#c9a227,#e8c84a);color:#0d0d0d}
-  .btn-outline{background:transparent;border:1px solid #2a2518;color:#a89060}
+  .btn{flex:1;padding:.6rem;font-size:.82rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;text-decoration:none;text-align:center;font-family:inherit;transition:opacity .2s,box-shadow .2s}
+  .btn-purple{background:linear-gradient(135deg,#6a22b8,#9b3ef0);color:#fff;box-shadow:0 0 16px rgba(120,50,220,.35)}
+  .btn-outline{background:transparent;border:1px solid rgba(216,191,216,.18);color:#b89fc8}
   .btn:hover{opacity:.82}
-  footer{text-align:center;padding:1.2rem;color:#3a3020;font-size:.78rem}
+  footer{text-align:center;padding:1.2rem;color:#3a2050;font-size:.78rem}
 </style>
 </head>
 <body>
@@ -54,7 +70,7 @@
     {% for p in products %}
     <div class="card">
       <img class="card-img" src="/product-image/{{ p.id }}" alt="{{ p.label }}"
-           onerror="this.style.background='#1a1608';this.style.padding='3rem'">
+           onerror="this.style.padding='3rem';this.style.opacity='.3'">
       <div class="card-body">
         <span class="badge">{{ p.label }}</span>
         <div class="card-name">{{ p.name }}</div>
@@ -63,7 +79,7 @@
           <div class="qr-url">{{ p.tryon_url }}</div>
         </div>
         <div class="actions">
-          <a class="btn btn-gold" href="{{ p.tryon_url }}" target="_blank">Try On</a>
+          <a class="btn btn-purple" href="{{ p.tryon_url }}" target="_blank">Try On</a>
           <a class="btn btn-outline" href="/qr/{{ p.id }}" download="qr_{{ p.id }}.png">QR ↓</a>
         </div>
       </div>
