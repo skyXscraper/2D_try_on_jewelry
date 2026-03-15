@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JewelAR — Try On</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Outfit',sans-serif;background:#0d0d0d;color:#f0ead6;min-height:100vh;display:flex;flex-direction:column}
+  header{padding:1.2rem 2rem;border-bottom:1px solid #2a2518;display:flex;align-items:center;gap:1rem}
+  .logo{font-size:1.3rem;font-weight:700;color:#d4af37}
+  .badge{background:#1e1a0e;border:1px solid #3a3020;color:#a89060;font-size:.75rem;padding:.15rem .55rem;border-radius:99px;margin-left:.6rem;text-transform:uppercase;letter-spacing:.06em}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1rem}
+  h1{font-size:1.5rem;font-weight:700;color:#d4af37;margin-bottom:.3rem;text-align:center}
+  .sub{color:#7a6a40;font-size:.87rem;margin-bottom:1.8rem;text-align:center}
+  /* Tabs */
+  .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+  .tab{padding:.55rem 1.4rem;border-radius:99px;font-size:.88rem;font-weight:600;cursor:pointer;border:1.5px solid #2a2518;color:#a89060;background:transparent;font-family:inherit;transition:all .2s}
+  .tab.active{background:#d4af37;color:#0d0d0d;border-color:#d4af37}
+  /* Webcam panel */
+  #panel-webcam{display:flex;flex-direction:column;align-items:center;width:100%}
+  .stream-wrap{position:relative;border-radius:14px;overflow:hidden;border:1.5px solid #2a2518;background:#1a1608;max-width:640px;width:100%}
+  .stream-wrap img{width:100%;display:block}
+  .stream-hint{position:absolute;bottom:.8rem;left:50%;transform:translateX(-50%);background:rgba(13,13,13,.75);color:#a89060;font-size:.75rem;padding:.3rem .8rem;border-radius:99px;white-space:nowrap;pointer-events:none}
+  /* Photo panel */
+  #panel-photo{display:none;flex-direction:column;align-items:center;width:100%;max-width:600px}
+  .drop{border:1.5px dashed #2e2810;border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;width:100%;margin-bottom:1rem}
+  .drop:hover{border-color:#d4af37;background:#1a1608}
+  .drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+  .drop .icon{font-size:2.2rem;margin-bottom:.5rem}
+  .drop p{color:#6a5a30;font-size:.85rem}
+  .btn{padding:.75rem 2rem;font-size:.92rem;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:opacity .2s}
+  .btn-gold{background:linear-gradient(135deg,#c9a227,#e8c84a);color:#0d0d0d}
+  .btn-outline{background:transparent;border:1.5px solid #2a2518;color:#a89060}
+  .btn:hover{opacity:.82}
+  #result-section{display:none;flex-direction:column;align-items:center;margin-top:1.5rem;width:100%}
+  #result-img{max-width:100%;border-radius:12px;border:1.5px solid #2a2518;margin-bottom:1rem}
+  .actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+  #spinner{display:none;margin:2rem auto;width:40px;height:40px;border:3px solid #2a2518;border-top-color:#d4af37;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  footer{text-align:center;padding:1rem;color:#3a3020;font-size:.75rem;margin-top:auto}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">✦ JewelAR</span>
+  <span class="badge">{{ product.label }}</span>
+</header>
+<main>
+  <h1>Try On</h1>
+  <p class="sub">{{ product.label }} — {{ product.name }}</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('webcam',this)">📷 Live Webcam</button>
+    <button class="tab"        onclick="switchTab('photo',this)">🖼️ Upload Photo</button>
+  </div>
+
+  <!-- Webcam panel -->
+  <div id="panel-webcam">
+    <div class="stream-wrap">
+      <img src="/stream/{{ product.id }}" alt="Live Try-On">
+      <span class="stream-hint">Live · Move closer for best results</span>
+    </div>
+  </div>
+
+  <!-- Photo upload panel -->
+  <div id="panel-photo">
+    <div class="drop" id="dropzone">
+      <input type="file" id="faceFile" accept="image/*" onchange="handleFile(this)">
+      <div class="icon">🤳</div>
+      <p>Click or drag to upload a face photo</p>
+      <p id="file-name" style="color:#d4af37;margin-top:.4rem;font-weight:600"></p>
+    </div>
+    <button class="btn btn-gold" onclick="uploadPhoto()">✦ Apply Jewelry Try-On</button>
+
+    <div id="spinner"></div>
+
+    <div id="result-section">
+      <img id="result-img" src="" alt="Try-On Result">
+      <div class="actions">
+        <a id="dl-btn" class="btn btn-gold" href="#" download="tryon_result.jpg">⬇ Download Result</a>
+        <button class="btn btn-outline" onclick="resetPhoto()">Try Another Photo</button>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>JewelAR Virtual Try-On — {{ product.label }}</footer>
+
+<script>
+const PID = "{{ product.id }}";
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-webcam').style.display = name === 'webcam' ? 'flex' : 'none';
+  document.getElementById('panel-photo').style.display  = name === 'photo'  ? 'flex' : 'none';
+  // Stop webcam stream when switching away to save resources
+  const img = document.querySelector('#panel-webcam img');
+  if (name === 'webcam') img.src = `/stream/${PID}`;
+  else img.src = '';
+}
+
+function handleFile(input) {
+  document.getElementById('file-name').textContent = input.files[0]?.name || '';
+}
+
+async function uploadPhoto() {
+  const file = document.getElementById('faceFile').files[0];
+  if (!file) { alert('Please select a face photo first.'); return; }
+
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('result-section').style.display = 'none';
+
+  const fd = new FormData();
+  fd.append('face', file);
+
+  const res  = await fetch(`/tryon-image/${PID}`, { method: 'POST', body: fd });
+  const data = await res.json();
+
+  document.getElementById('spinner').style.display = 'none';
+
+  if (data.result_url) {
+    const ts = Date.now();
+    document.getElementById('result-img').src = data.result_url + '?t=' + ts;
+    document.getElementById('dl-btn').href = `/download/${PID}`;
+    document.getElementById('result-section').style.display = 'flex';
+  } else {
+    alert('Try-on failed: ' + (data.error || 'Unknown error'));
+  }
+}
+
+function resetPhoto() {
+  document.getElementById('faceFile').value = '';
+  document.getElementById('file-name').textContent = '';
+  document.getElementById('result-section').style.display = 'none';
+}
+</script>
+</body>
+</html>

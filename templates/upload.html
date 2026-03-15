@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jewelry Try-On — Upload</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Outfit',sans-serif;background:#0d0d0d;color:#f0ead6;min-height:100vh;display:flex;flex-direction:column}
+  header{padding:1.5rem 2.5rem;border-bottom:1px solid #2a2518;display:flex;align-items:center;gap:1rem}
+  header .logo{font-size:1.4rem;font-weight:700;color:#d4af37;letter-spacing:.04em}
+  header nav a{color:#a89060;text-decoration:none;margin-left:2rem;font-size:.9rem;transition:color .2s}
+  header nav a:hover{color:#d4af37}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem 1rem}
+  .card{background:#161410;border:1px solid #2a2518;border-radius:16px;padding:2.5rem;width:100%;max-width:520px;box-shadow:0 8px 48px rgba(0,0,0,.5)}
+  h1{font-size:1.6rem;font-weight:700;color:#d4af37;margin-bottom:.4rem}
+  .sub{color:#7a6a40;font-size:.9rem;margin-bottom:2rem}
+  .field{margin-bottom:1.5rem}
+  .field label{display:block;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#8a7a50;margin-bottom:.5rem}
+  .field label .badge{background:#1e1a0e;border:1px solid #3a3020;color:#a89060;font-size:.7rem;padding:.1rem .5rem;border-radius:99px;margin-left:.5rem;font-weight:400}
+  .drop{border:1.5px dashed #2e2810;border-radius:10px;padding:1.4rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+  .drop:hover{border-color:#d4af37;background:#1a1608}
+  .drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .drop .icon{font-size:1.8rem;margin-bottom:.4rem}
+  .drop p{font-size:.82rem;color:#6a5a30}
+  .drop .chosen{font-size:.82rem;color:#d4af37;margin-top:.3rem;font-weight:600}
+  .btn{width:100%;padding:.9rem;background:linear-gradient(135deg,#c9a227,#e8c84a);color:#0d0d0d;font-weight:700;font-size:1rem;border:none;border-radius:10px;cursor:pointer;transition:opacity .2s;font-family:inherit;margin-top:.5rem}
+  .btn:hover{opacity:.88}
+  footer{text-align:center;padding:1.2rem;color:#3a3020;font-size:.78rem}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">✦ JewelAR</span>
+  <nav><a href="/seller">Upload</a><a href="/seller/dashboard">Dashboard</a></nav>
+</header>
+<main>
+  <div class="card">
+    <h1>Upload Jewelry</h1>
+    <p class="sub">Upload product images — backgrounds are removed automatically.</p>
+    <form method="POST" action="/seller/upload" enctype="multipart/form-data">
+      {% for field, icon, label in [('earring_pair','💍','Earring Pair'), ('necklace','📿','Necklace'), ('spectacles','🕶️','Spectacles')] %}
+      <div class="field">
+        <label>{{ icon }} {{ label }} <span class="badge">optional</span></label>
+        <div class="drop" id="drop-{{ field }}">
+          <input type="file" name="{{ field }}" accept="image/*"
+                 onchange="document.getElementById('lbl-{{ field }}').textContent=this.files[0]?.name||''">
+          <div class="icon">{{ icon }}</div>
+          <p>Click or drag to upload</p>
+          <p class="chosen" id="lbl-{{ field }}"></p>
+        </div>
+      </div>
+      {% endfor %}
+      <button class="btn" type="submit">✦ Remove Background &amp; Generate Try-On</button>
+    </form>
+  </div>
+</main>
+<footer>JewelAR Virtual Try-On Platform</footer>
+</body>
+</html>

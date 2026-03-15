@@ -123,9 +123,12 @@ def get_face_landmarks(frame: np.ndarray) -> dict | None:
     tilt_angle = math.degrees(math.atan2(dy, dx))
 
     return {
-        "left_ear":   left_ear,    # earlobe-level anchor
-        "right_ear":  right_ear,
-        "jaw_mid":    (jaw_mid_x, jaw_mid_y),
-        "face_width": face_width,  # cheek-to-cheek for scale
-        "tilt_angle": tilt_angle,
+        "left_ear":        left_ear,       # earlobe-level anchor
+        "right_ear":       right_ear,
+        "jaw_mid":         (jaw_mid_x, jaw_mid_y),
+        "face_width":      face_width,     # cheek-to-cheek for scale
+        "tilt_angle":      tilt_angle,
+        "left_eye_outer":  left_eye,       # outer eye corners for spectacles
+        "right_eye_outer": right_eye,
+        "eye_span":        math.dist(left_eye, right_eye),
     }
